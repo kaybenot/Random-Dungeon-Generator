@@ -29,11 +29,16 @@ public class Room
         return false;
     }
 
-    public void Instantiate(GameObject roomPrefab, Vector2 pointSize)
+    public void Instantiate(GameObject roomPrefab, Vector2 pointSize, Transform parent)
     {
         for(int x = Pos.x; x < Pos.x + Size.x; x++)
-            for(int y = Pos.y; y < Pos.y + Size.y; y++)
-                InstantiatedObjects.Add(Object.Instantiate(roomPrefab, new Vector3(x * pointSize.x, 0f, y * pointSize.y), Quaternion.identity));
+            for (int y = Pos.y; y < Pos.y + Size.y; y++)
+            {
+                GameObject go = Object.Instantiate(roomPrefab, new Vector3(x * pointSize.x, 0f, y * pointSize.y),
+                    Quaternion.identity);
+                go.transform.parent = parent;
+                InstantiatedObjects.Add(go);
+            }
     }
 
     public void MarkSpaceOccupied(Map map)
@@ -55,10 +60,15 @@ public class Corridor
         CorridorPoints = new List<Point>();
     }
 
-    public void Instantiate(GameObject corridorPrefab, Vector2 pointSize, Map map)
+    public void Instantiate(GameObject corridorPrefab, Vector2 pointSize, Map map, Transform parent)
     {
-        foreach(var point in CorridorPoints.Where(p => !map[p.Pos.x, p.Pos.y].Occupied))
-            InstantiatedObjects.Add(Object.Instantiate(corridorPrefab, new Vector3(point.Pos.x * pointSize.x, 0f, point.Pos.y * pointSize.y), Quaternion.identity));
+        foreach (var point in CorridorPoints.Where(p => !map[p.Pos.x, p.Pos.y].Occupied))
+        {
+            GameObject go = Object.Instantiate(corridorPrefab,
+                new Vector3(point.Pos.x * pointSize.x, 0f, point.Pos.y * pointSize.y), Quaternion.identity);
+            go.transform.parent = parent;
+            InstantiatedObjects.Add(go);
+        }
     }
 }
 

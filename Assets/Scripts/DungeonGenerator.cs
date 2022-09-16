@@ -92,16 +92,12 @@ public class DungeonGenerator : EditorWindow
 
     private void clearDungeon()
     {
-        if (map != null)
-        {
-            foreach (var obj in map.Rooms.SelectMany(room => room.InstantiatedObjects))
-                if(obj)
-                    DestroyImmediate(obj);
-            foreach (var obj in map.Corridors.SelectMany(room => room.InstantiatedObjects))
-                if(obj)
-                    DestroyImmediate(obj);
-            map = null;
-        }
+        GameObject rooms = GameObject.Find("Rooms");
+        GameObject corridors = GameObject.Find("Corridors");
+        DestroyImmediate(rooms);
+        DestroyImmediate(corridors);
+        
+        map = null;
         graph = null;
     }
 
@@ -113,6 +109,8 @@ public class DungeonGenerator : EditorWindow
 
     private void placeRoomsRandomly()
     {
+        GameObject rooms = new GameObject("Rooms");
+        
         int counter = roomAmount;
         while (counter > 0)
         {
@@ -124,7 +122,7 @@ public class DungeonGenerator : EditorWindow
             if (!isTouching)
             {
                 map.Rooms.Add(room);
-                room.Instantiate(roomObj, pointSize);
+                room.Instantiate(roomObj, pointSize, rooms.transform);
                 room.MarkSpaceOccupied(map);
                 counter--;
             }
@@ -133,7 +131,9 @@ public class DungeonGenerator : EditorWindow
 
     private void instantiateCorridors()
     {
+        GameObject corridors = new GameObject("Corridors");
+        
         foreach (var corridor in map.Corridors)
-            corridor.Instantiate(corridorObj, pointSize, map);
+            corridor.Instantiate(corridorObj, pointSize, map, corridors.transform);
     }
 }
