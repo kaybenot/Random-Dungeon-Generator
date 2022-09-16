@@ -12,10 +12,12 @@ public class Grid
     public Grid(int w, int h)
     {
         grid = new Point[w, h];
+        for(int x = 0; x < w; x++)
+            for(int y = 0; y < h; y++)
+                grid[x, y] = new Point(x, y);
         Width = w;
         Height = h;
     }
-
-    public Point this[Point p] => grid[p.Pos.x, p.Pos.y];
+    
     public Point this[int x, int y] => grid[x, y];
 }
